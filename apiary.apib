@@ -1,5 +1,46 @@
-FORMAT: 1A
-HOST: http://www.google.com
+FORMAT: X-1A
+
+HOST: http://selfie-api.icehouse.dijedodol.me/v1/rest-api/
+
+#IceHouse Selfie API Documentation V1
+*Author: Gde Satrigraha (gde@icehousecorp.com)*  
+IceHouse Selfie API is a RESTful Web Service used by the selfie client application to communicate with the Selfie Backend Services.
+
+# Allowed HTTPs verbs:
+
+- `GET` - Get a resource or list of resources
+- `POST` - To create or update resource
+- `PUT` - To update resource
+- `DELETE` - To delete resource
+
+# Description Of Usual Server Responses
+
+- `200 OK` - the request was successful (some API calls may return 201 instead).
+- `201 Created` - the request was successful and a resource was created.
+- `202 Accepted` - the request was accepted and enqueue for processing later.
+- `204 No Content` - the request was successful but there is no representation to return (i.e. the response is empty).
+- `400 Bad Request` - the request could not be understood or was missing required parameters.
+- `401 Unauthorized` - authentication failed.
+- `403 Forbidden` - access denied.
+- `404 Not Found` - resource was not found.
+- `422 Unprocessable Entity` - i.e. validation errors.
+- `500 Internal Server Error` - Bad bad bad.
+- `503 Service Unavailable` - service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
+
+# HTTP Headers
+The following custom HTTP Headers must be present when invoking the Selfie API (also refer to [RFC for custom HTTP Header](http://tools.ietf.org/html/rfc6648)):  
+
+- `TimeZone` - Device current timezone as listed in [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Ex: Asia/Jakarta
+
+# JSON
+Any complex data type MUST be encoded in JSON.  
+C++ struct mixed with Java data type will be used to describe the complex data model.
+
+# Request Data Model
+Below is C++ structs definition describing the complex JSON data model used in the API request.
+
+# Response Data Model
+Below is C++ structs definition describing the complex JSON data model used in the API request.
 
 # icehouse-selfie-api
 Notes API is a *short texts saving* service similar to its physical paper presence on your table.
