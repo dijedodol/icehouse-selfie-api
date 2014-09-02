@@ -1,7 +1,5 @@
 FORMAT: X-1A
 
-HOST: http://selfie-api.icehouse.dijedodol.me/v1/rest-api/
-
 #IceHouse Selfie API Documentation V1
 *Author: Gde Satrigraha (gde@icehousecorp.com)*  
 IceHouse Selfie API is a RESTful Web Service used by the selfie client application to communicate with the Selfie Backend Services.
@@ -28,22 +26,252 @@ IceHouse Selfie API is a RESTful Web Service used by the selfie client applicati
 - `503 Service Unavailable` - service is temporary unavailable (e.g. scheduled Platform Maintenance). Try again later.
 
 # HTTP Headers
-The following custom HTTP Headers must be present when invoking the Selfie API (also refer to [RFC for custom HTTP Header](http://tools.ietf.org/html/rfc6648)):  
+The following custom HTTP Headers must be present when invoking the Selfie API (also refer to [RFC for custom HTTP Header](http://tools.ietf.org/html/rfc6648) for the naming reason):  
 
-- `TimeZone` - Device current timezone as listed in [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). Ex: Asia/Jakarta
+### Authorization
+Selfie client apps unique `ApiKey`.  
+Example:
 
-# JSON
+- Authorization: Token token=ExampleApiKey
+
+### Access-Token
+Selfie client apps instance `AccessToken` as given by the App Instance Registration Api.  
+This header is ***not required*** when invoking the App Instance Registration Api.  
+Example:
+
+- Access-Token: ExampleAccessToken
+
+### TimeZone
+Device current timezone as listed in [here](http://en.wikipedia.org/wiki/List_of_tz_database_time_zones). GMT+XX, GMT-XX, UTC+XX, UTC-XX is also supported.  
+Example:
+
+- TimeZone: Asia/Jakarta
+- TimeZone: GMT+07
+- TimeZone: UTC-07
+
+# Data Format
+
+## JSON
 Any complex data type MUST be encoded in JSON.  
-C++ struct mixed with Java data type will be used to describe the complex data model.
+C++ struct mixed with Java data type will be used to describe the complex data model. `Optional<String>` means the type is String and nullable (optional).
 
-# Request Data Model
-Below is C++ structs definition describing the complex JSON data model used in the API request.
+## Enum
+Enum constant which is used in the request or response data. Enum value must be serialized as a `String`.
 
-# Response Data Model
-Below is C++ structs definition describing the complex JSON data model used in the API request.
+### SocialProviderEnum<a id="SocialProviderEnum"></a>
+
+    enum SocialProviderEnum {
+        facebook,
+        google_plus,
+        twitter,
+    }
+
+### GenderEnum<a id="GenderEnum"></a>
+
+    enum GenderEnum {
+        male,
+        female
+    }
+
+## Request Data Model
+Below is C++ structs definition describing the complex JSON data model used in the API request.  
+
+### AppInstanceRegParam<a id="AppInstanceRegParam"></a>
+
+    struct AppInstanceRegParam {
+        String device_model;
+        String device_os;
+        String device_uuid;
+        String device_push_token;
+    }
+
+### UserSocialLoginParam<a id="UserSocialLoginParam"></a>
+
+    struct UserSocialLoginParam {
+        SocialProviderEnum social_provider;
+        String social_access_token;
+        String social_id;
+        String device_push_token;
+    }
+
+### IcebergUserLoginParam<a id="IcebergUserLoginParam"></a>
+
+    struct IcebergUserLoginParam {
+        String email;
+        String password;
+    }
+
+### IcebergUserRegParam<a id="IcebergUserRegParam"></a>
+
+    struct IcebergUserRegParam : IcebergUserLoginParam {
+        String name;
+        GenderEnum gender;
+        String date_of_birth;
+    }
+
+fields notes:
+
+- `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
+
+### AssocSocialAccountParam<a id="AssocSocialAccountParam"></a>
+
+    struct AssocSocialAccountParam : UserSocialLoginParam {
+    }
+
+### FeatureCounterUsageParam<a id="FeatureCounterUsageParam"></a>
+
+    struct FeatureCounterUsageParam {
+        Integer consumed_counter_amount;
+    }
+
+### SubscriptionCounterUsageParam<a id="SubscriptionCounterUsageParam"></a>
+
+    struct SubscriptionCounterUsageParam : FeatureCounterUsageParam {
+    }
+
+## Response Data Model
+Below is C++ structs definition describing the complex JSON data model used in the API request.  
+
+### ExceptionResult<a id="ExceptionResult"></a>  
+This data model is used when an exception is occured on the server and failed when processing the client request.
+Ex: data validation fail, system failure, etc.
+
+    struct ExceptionResult {
+        String message;
+        Optional<ExceptionResult> cause;
+    }
+
+### StaticFileResult<a id="StaticFileResult"></a>  
+
+    struct StaticFileResult {
+        String url;
+        String sha1Hash;
+    }
+
+fields notes:
+
+- `url` - absolute url string to download the file  
+- `sha1Hash` - lower case hex encoded sha1 hash of the file, use this to check file integrity or checking cached file state
+
+### AppVersionResult<a id="AppVersionResult"></a>
+
+    struct AppVersionResult {
+        String version_name;
+        String version_code;
+        boolean enforced;
+    }
+
+### LanguagePack<a id="LanguagePack"></a>
+
+    struct LanguagePack {
+        String lang_id;
+        String lang_name;
+        StaticFileResult static_file;
+    }
+    
+fields notes:
+
+- `static_file` - zip file containing the language pack required files
+
+### AppConfigurationResult<a id="AppConfigurationResult"></a>
+
+    struct AppConfigurationResult {
+        AppVersionResult latest_app_version;
+        LanguagePack[] available_language_packs;
+    }
+
+### AppInstanceRegResult<a id="AppInstanceRegResult"></a>
+
+    struct AppInstanceRegResult {
+        String access_token;
+        String user_uuid;
+    }
+
+### UserLoginResult<a id="UserLoginResult"></a>
+
+    struct UserLoginResult {
+        String user_uuid;
+    }
+
+### UserLogoutResult<a id="UserLogoutResult"></a>
+
+    struct UserLogoutResult : UserLoginResult {
+    }
+
+### UserProfileResult<a id="UserProfileResult"></a>
+
+    struct UserProfileResult : UserLoginResult {
+        String email;
+        String name;
+        GenderEnum gender;
+        String date_of_birth;
+    }
+
+fields notes:
+
+- `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
+
+### FeatureStatusResult<a id="FeatureStatusResult"></a>
+Represent a feature's eligibility status for the current user's device.
+All fields condition in the model must be satisified to determine the feature's eligibility status.
+
+    struct FeatureStatusResult {
+        Optional<String> expired_date;
+        Optional<Integer> remaining_counter;
+    }
+
+fields notes:
+
+- `expired_date` - if null, no time limit is applied on current user's device to use the feature
+- `remaining_counter` - if null, no limit on how many times the user may use the feature on their current device
+
+### SubscriptionStatusResult<a id="SubscriptionStatusResult"></a>  
+Subscription is treated almost the same as a feature
+
+    struct SubscriptionStatusResult : FeatureStatusResult {
+    }
+
+### EligibleFeaturesResult<a id="EligibleFeaturesResult"></a>
+
+    struct EligibleFeaturesResultItem {
+        String feature_name;
+        Optional<StaticFileResult> static_file;
+        FeatureStatus status;
+    }
+
+    struct EligibleFeaturesResult : List<EligibleFeaturesResultItem> {
+    }
+
+fields notes:
+
+- `EligibleFeaturesResultItem.static_file` - zip file containing the feature's required files, null if this feature doesn't has any static file associated with it
 
 # icehouse-selfie-api
-Notes API is a *short texts saving* service similar to its physical paper presence on your table.
+SelfieAPI is a proxy API for accessing IceBerg, Entitlement, and Payment Gateway
+
+# Group App Instance
+App Instance related resources
+
+## App Instance Registration [/v1/instance]
+### Register App Instance [POST]
+Request Model: [AppInstanceRegParam](#AppInstanceRegParam)  
+Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
+
++ Request (application/json)
+
+        {
+            "device_type": "Samsung Galaxy S5",
+            "device_os": "Android OS 4.4.2",
+            "device_uuid": "ExampleDeviceUUID",
+            "push_token": "ExamplePushToken"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "access_token": "ExampleAccessToken",
+            "user_uuid": "1234567890abcdef"
+        }
 
 # Group Notes
 Notes related resources of the **Notes API**
