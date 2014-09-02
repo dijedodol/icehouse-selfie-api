@@ -153,14 +153,6 @@ fields notes:
 - `url` - absolute url string to download the file  
 - `sha1Hash` - lower case hex encoded sha1 hash of the file, use this to check file integrity or checking cached file state
 
-### AppVersionResult<a id="AppVersionResult"></a>
-
-    struct AppVersionResult {
-        String version_name;
-        String version_code;
-        boolean enforced;
-    }
-
 ### LanguagePack<a id="LanguagePack"></a>
 
     struct LanguagePack {
@@ -174,6 +166,12 @@ fields notes:
 - `static_file` - zip file containing the language pack required files
 
 ### AppConfigurationResult<a id="AppConfigurationResult"></a>
+
+    struct AppVersionResult {
+        String version_name;
+        String version_code;
+        boolean enforced;
+    }
 
     struct AppConfigurationResult {
         AppVersionResult latest_app_version;
@@ -216,13 +214,13 @@ Represent a feature's eligibility status for the current user's device.
 All fields condition in the model must be satisified to determine the feature's eligibility status.
 
     struct FeatureStatusResult {
-        Optional<String> expired_date;
+        Optional<Long> expired_timestamp;
         Optional<Integer> remaining_counter;
     }
 
 fields notes:
 
-- `expired_date` - if null, no time limit is applied on current user's device to use the feature
+- `expired_date` - epoch timestamp in millisecond, if null, no time limit is applied on current user's device to use the feature
 - `remaining_counter` - if null, no limit on how many times the user may use the feature on their current device
 
 ### SubscriptionStatusResult<a id="SubscriptionStatusResult"></a>  
@@ -234,8 +232,8 @@ Subscription is treated almost the same as a feature
 ### EligibleFeaturesResult<a id="EligibleFeaturesResult"></a>
 
     struct EligibleFeaturesResultItem {
-        String feature_name;
-        Optional<StaticFileResult> static_file;
+        Long feature_id;
+        String feature_type;
         FeatureStatus status;
     }
 
@@ -244,15 +242,18 @@ Subscription is treated almost the same as a feature
 
 fields notes:
 
+- `EligibleFeaturesResultItem.id` - this fields in unique accross `feature_type`
 - `EligibleFeaturesResultItem.static_file` - zip file containing the feature's required files, null if this feature doesn't has any static file associated with it
 
 # icehouse-selfie-api
 SelfieAPI is a proxy API for accessing IceBerg, Entitlement, and Payment Gateway
 
 # Group App Instance
-App Instance related resources
+Before users register using their social accounts, devices should always be recognized and authenticated.
+Therefore an app instance registration is required.
+On instance registration clients makes a request to the server with Application `ApiKey` and device information.
 
-## App Instance Registration [/v1/instance]
+## App Instance Registration [/v1/app/instance]
 ### Register App Instance [POST]
 Request Model: [AppInstanceRegParam](#AppInstanceRegParam)  
 Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
@@ -273,44 +274,294 @@ Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
             "user_uuid": "1234567890abcdef"
         }
 
-# Group Notes
-Notes related resources of the **Notes API**
+# Group App Configuration
+Some application's configuration can be pulled from the server.
 
-## Notes Collection [/notes]
-### List all Notes [GET]
-+ Response 200 (application/json)
-
-        [{
-          "id": 1, "title": "Jogging in park"
-        }, {
-          "id": 2, "title": "Pick-up posters from post-office"
-        }]
-
-### Create a Note [POST]
-+ Request (application/json)
-
-        { "title": "Buy cheese and bread for breakfast." }
-
-+ Response 201 (application/json)
-
-        { "id": 3, "title": "Buy cheese and bread for breakfast." }
-
-## Note [/notes/{id}]
-A single Note object with all its details
+## App Configuration [/v1/app/configuration/{app_version_code}]
 
 + Parameters
-    + id (required, number, `1`) ... Numeric `id` of the Note to perform action with. Has example value.
+    + app_version_code (required, number, `1`) ... Numeric application version code currently invoking this Selfie Api.
 
-### Retrieve a Note [GET]
+### Get AppConfiguration [GET]
+Response Model: [AppConfigurationResult](#AppConfigurationResult)
+
 + Response 200 (application/json)
+
+        {
+            "latest_app_version": {
+                "version_name": "2.0.0",
+                "version_code": "3",
+                "enforced": true
+            },
+            "available_language_packs": [{
+                "id": "en_US",
+                "lang_name": "English (US)",
+                "static_file": {
+                    "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
+                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e"
+                }
+            },{
+                "id": "id_ID",
+                "lang_name": "Indonesia",
+                "static_file": {
+                    "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
+                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e"
+                }
+            }]
+        }
+
+
+# Group Social Network
+User can register or login to Selfie using their social networking account.
+Current list of supported social network is listed in [SocialProviderEnum](#SocialProviderEnum)
+
+## Registration / Login [/v1/user/social_network/login]
+### Register / Login through Social Network [POST]
+Request Model: [UserSocialLoginParam](#UserSocialLoginParam)  
+Response Model: [UserLoginResult](#UserLoginResult)
+
++ Request (application/json)
 
     + Header
 
-            X-My-Header: The Value
-
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
     + Body
+    
+            {
+                "social_provider": "facebook",
+                "social_access_token": "example_facebook_access_token",
+                "social_id": "example_facebook_user_id",
+                "device_push_token": "example_gcm_push_token"
+            }
+            
++ Response 201 (application/json)
 
-            { "id": 2, "title": "Pick-up posters from post-office" }
+        {
+            "user_uuid": "fedcba0987654321"
+        }
 
-### Remove a Note [DELETE]
-+ Response 204
+## Association [/v1/user/social_network/assoc]
+### Associate a Social Network [POST]
+Associate a social network account to an existing social network account.
+User must be logged-in to the Selfie system before allowed to access this functionality.  
+  
+Request Model: [AssocSocialAccountParam](#AssocSocialAccountParam)  
+Response Model: [UserLoginResult](#UserLoginResult)
+
++ Request (application/json)
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "social_provider": "facebook",
+                "social_access_token": "example_facebook_access_token",
+                "social_id": "example_facebook_user_id",
+                "device_push_token": "example_gcm_push_token"
+            }
+            
++ Response 201 (application/json)
+
+        {
+            "user_uuid": "fedcba0987654321"
+        }
+
+# Group IceBerg User
+In addition to social network account login, Selfie user also can register and login using their email address & password (IceBerg account).
+
+## Registration [/v1/user/iceberg/register]
+### Register a user to IceBerg [POST]
+Attempt to register a user for an IceBerg user account.
+Upon successful registration, user is automatically logged-in to their newly created IceBerg user account.  
+  
+Request Model: [IcebergUserRegParam](#IcebergUserRegParam)  
+Response Model: [UserLoginResult](#UserLoginResult)
+
++ Request (application/json)
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "email": "user@something.com",
+                "password": "rahasia...",
+                "name": "Selfie User",
+                "gender": "male",
+                "date_of_birth": "19980321"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "user_uuid": "fedcba0987654321"
+        }
+
+## Login [/v1/user/iceberg/login]
+### Login a User to IceBerg [POST]
+Request Model: [IcebergUserLoginParam](#IcebergUserLoginParam)  
+Response Model: [UserLoginResult](#UserLoginResult)
+
++ Request (application/json)
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "email": "user@something.com",
+                "password": "rahasia..."
+            }
+
++ Response 201 (application/json)
+
+        {
+            "user_uuid": "fedcba0987654321"
+        }
+
+# Group App Subscription
+User must be subscribed to be able to use the Selfie Client Apps.
+
+## App Subscription [/v1/app/subscription]
+### Get subscription status [GET]
+Response Model: [SubscriptionStatusResult](#SubscriptionStatusResult)
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+
++ Response 200 (application/json)
+
+        {
+            "expired_timestamp": "1409638190000",
+            "remaining_counter": 1000
+        }
+
+### Deduce subscription counter [PUT]
+Request Model: [SubscriptionCounterUsageParam](#SubscriptionCounterUsageParam)  
+Response Model: [SubscriptionStatusResult](#SubscriptionStatusResult)
+
++ Request
+
+    + Header
+    
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "consumed_counter_amount": "125"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "expired_timestamp": "1409638190000",
+            "remaining_counter": 875
+        }
+
+## App Features [/v1/app/feature]
+### List eligible features [GET]
+Response Model: [EligibleFeaturesResult](#EligibleFeaturesResult)
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+
++ Response 200 (application/json)
+
+        [{
+            "feature_id": 1,
+            "feature_type": "camera_filter",
+            "status": {
+                "expired_timestamp": null,
+                "remaining_counter": 100
+            }
+        },{
+            "feature_id": 2,
+            "feature_type": "voice",
+            "status": {
+                "expired_timestamp": 1409638190000,
+                "remaining_counter": null
+            }
+        }]
+
+## Single App Feature [/v1/app/feature/{id}]
+
++ Parameters
+    + id (required, number, `1`) ... Numeric unique feature `id` as given by Selfie Api.
+
+### Get a single feature eligibility status [GET]
+Response Model: [EligibleFeaturesResultItem](#SubscriptionStatusResult)
+
++ Request
+
+    + Header
+    
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+
++ Response 200 (application/json)
+
+        {
+            "feature_id": 1,
+            "feature_type": "camera_filter",
+            "status": {
+                "expired_timestamp": null,
+                "remaining_counter": 100
+            }
+        }
+        
+### Deduce a single feature counter [PUT]
+Request Model: [FeatureCounterUsageParam](#FeatureCounterUsageParam)  
+Response Model: [EligibleFeaturesResultItem](#SubscriptionStatusResult)
+
++ Request
+
+    + Header
+    
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "consumed_counter_amount": "50"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "expired_date": null,
+            "remaining_counter": 50
+        }
