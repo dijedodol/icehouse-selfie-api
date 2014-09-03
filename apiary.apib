@@ -78,24 +78,24 @@ Below is C++ structs definition describing the complex JSON data model used in t
 
 ### AppInstanceRegParam<a id="AppInstanceRegParam"></a>
 
-    struct AppInstanceRegParam {
-        DeviceModel device_model;
-        DeviceOs device_os;
-        String device_uuid;
-        String device_push_token;
-    }
-
-    struct DeviceModel {
+    struct DeviceModelParam {
         String manufacturer;
         String model;
     }
     
-    struct DeviceOs {
+    struct DeviceOsParam {
         String type;
         String version;
         Optional<Integer> version_code;
     }
     
+    struct AppInstanceRegParam {
+        DeviceModelParam device_model;
+        DeviceOsParam device_os;
+        String device_uuid;
+        String device_push_token;
+    }
+
 ### UserSocialLoginParam<a id="UserSocialLoginParam"></a>
 
     struct UserSocialLoginParam {
