@@ -124,22 +124,6 @@ fields notes:
 
 - `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
 
-### AssocSocialAccountParam<a id="AssocSocialAccountParam"></a>
-
-    struct AssocSocialAccountParam : UserSocialLoginParam {
-    }
-
-### FeatureCounterUsageParam<a id="FeatureCounterUsageParam"></a>
-
-    struct FeatureCounterUsageParam {
-        Integer consumed_counter_amount;
-    }
-
-### SubscriptionCounterUsageParam<a id="SubscriptionCounterUsageParam"></a>
-
-    struct SubscriptionCounterUsageParam : FeatureCounterUsageParam {
-    }
-
 ## Response Data Model
 Below is C++ structs definition describing the complex JSON data model used in the API request.  
 
@@ -219,45 +203,6 @@ fields notes:
 fields notes:
 
 - `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
-
-### FeatureStatusResult<a id="FeatureStatusResult"></a>
-Represent a feature's eligibility status for the current user's device.
-All fields condition in the model must be satisified to determine the feature's eligibility status.
-
-    struct FeatureStatusResult {
-        Optional<Long> expired_timestamp;
-        Optional<Integer> remaining_counter;
-    }
-
-fields notes:
-
-- `expired_date` - epoch timestamp in millisecond, if null, no time limit is applied on current user's device to use the feature
-- `remaining_counter` - if null, no limit on how many times the user may use the feature on their current device
-
-### SubscriptionStatusResult<a id="SubscriptionStatusResult"></a>  
-Subscription is treated almost the same as a feature
-
-    struct SubscriptionStatusResult : FeatureStatusResult {
-    }
-
-### EligibleFeaturesResult<a id="EligibleFeaturesResult"></a>
-
-    struct EligibleFeaturesResultItem {
-        Long feature_id;
-        String feature_type;
-        FeatureStatus status;
-    }
-
-    struct EligibleFeaturesResult : List<EligibleFeaturesResultItem> {
-    }
-
-fields notes:
-
-- `EligibleFeaturesResultItem.id` - this fields in unique accross `feature_type`
-- `EligibleFeaturesResultItem.static_file` - zip file containing the feature's required files, null if this feature doesn't has any static file associated with it
-
-# icehouse-selfie-api
-SelfieAPI is a proxy API for accessing IceBerg, Entitlement, and Payment Gateway
 
 # Group App Instance
 Before users register using their social accounts, devices should always be recognized and authenticated.
@@ -366,7 +311,7 @@ Response Model: [UserLoginResult](#UserLoginResult)
 Associate a social network account to an existing social network account.
 User must be logged-in to the Selfie system before allowed to access this functionality.  
   
-Request Model: [AssocSocialAccountParam](#AssocSocialAccountParam)  
+Request Model: [UserSocialLoginParam](#UserSocialLoginParam)  
 Response Model: [UserLoginResult](#UserLoginResult)
 
 + Request (application/json)
@@ -451,135 +396,4 @@ Response Model: [UserLoginResult](#UserLoginResult)
 
         {
             "user_uuid": "fedcba0987654321"
-        }
-
-# Group App Subscription
-User must be subscribed to be able to use the Selfie Client Apps.
-
-## App Subscription [/v1/app/subscription]
-### Get subscription status [GET]
-Response Model: [SubscriptionStatusResult](#SubscriptionStatusResult)
-
-+ Request
-
-    + Header
-
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-            
-
-+ Response 200 (application/json)
-
-        {
-            "expired_timestamp": "1409638190000",
-            "remaining_counter": 1000
-        }
-
-### Deduce subscription counter [PUT]
-Request Model: [SubscriptionCounterUsageParam](#SubscriptionCounterUsageParam)  
-Response Model: [SubscriptionStatusResult](#SubscriptionStatusResult)
-
-+ Request
-
-    + Header
-    
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-            
-    + Body
-    
-            {
-                "consumed_counter_amount": "125"
-            }
-
-+ Response 200 (application/json)
-
-        {
-            "expired_timestamp": "1409638190000",
-            "remaining_counter": 875
-        }
-
-## App Features [/v1/app/feature]
-### List eligible features [GET]
-Response Model: [EligibleFeaturesResult](#EligibleFeaturesResult)
-
-+ Request
-
-    + Header
-
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-            
-
-+ Response 200 (application/json)
-
-        [{
-            "feature_id": 1,
-            "feature_type": "camera_filter",
-            "status": {
-                "expired_timestamp": null,
-                "remaining_counter": 100
-            }
-        },{
-            "feature_id": 2,
-            "feature_type": "voice",
-            "status": {
-                "expired_timestamp": 1409638190000,
-                "remaining_counter": null
-            }
-        }]
-
-## Single App Feature [/v1/app/feature/{id}]
-
-+ Parameters
-    + id (required, number, `1`) ... Numeric unique feature `id` as given by Selfie Api.
-
-### Get a single feature eligibility status [GET]
-Response Model: [EligibleFeaturesResultItem](#EligibleFeaturesResult)
-
-+ Request
-
-    + Header
-    
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-
-+ Response 200 (application/json)
-
-        {
-            "feature_id": 1,
-            "feature_type": "camera_filter",
-            "status": {
-                "expired_timestamp": null,
-                "remaining_counter": 100
-            }
-        }
-        
-### Deduce a single feature counter [PUT]
-Request Model: [FeatureCounterUsageParam](#FeatureCounterUsageParam)  
-Response Model: [EligibleFeaturesResultItem](#EligibleFeaturesResult)
-
-+ Request
-
-    + Header
-    
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-            
-    + Body
-    
-            {
-                "consumed_counter_amount": "50"
-            }
-
-+ Response 200 (application/json)
-
-        {
-            "expired_date": null,
-            "remaining_counter": 50
         }
