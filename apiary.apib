@@ -37,8 +37,8 @@ Example:
 - Authorization: Token token=ExampleApiKey
 
 ### Access-Token
-Selfie client apps instance `AccessToken` as given by the App Instance Registration Api.  
-This header is ***not required*** when invoking the App Instance Registration Api.  
+Selfie client apps instance `AccessToken` as given by the  Registration Api.  
+This header is ***not required*** when invoking the  Registration Api.  
 Example:
 
 - Access-Token: ExampleAccessToken
@@ -211,7 +211,7 @@ Before users register using their social accounts, devices should always be reco
 Therefore an app instance registration is required.
 On instance registration clients makes a request to the server with Application `ApiKey` and device information.
 
-## App Instance Registration [/v1/app/instance]
+## App Instance Registration [/v1/app/device_registration]
 ### Register App Instance [POST]
 Request Model: [AppInstanceRegParam](#AppInstanceRegParam)  
 Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
