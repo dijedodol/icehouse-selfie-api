@@ -399,3 +399,21 @@ Response Model: [UserLoginResult](#UserLoginResult)
         {
             "user_uuid": "fedcba0987654321"
         }
+
+## Login [/v1/user/logout]
+### Logout from Selfie [POST]
+Response Model: [UserLogoutResult](#UserLogoutResult)
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
++ Response 201 (application/json)
+
+        {
+            "user_uuid": "fedcba0987654321"
+        }
