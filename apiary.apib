@@ -22,6 +22,7 @@ IceHouse Selfie API is a RESTful Web Service used by the selfie client applicati
 - `403 Forbidden` - access denied.
 - `402 Payment Required` - payment is required.
 - `404 Not Found` - resource was not found.
+- `409 Conflict` - resource is conflicting with another resource (duplicate).
 - `410 Gone` - the resource has been expired.
 - `422 Unprocessable Entity` - i.e. validation errors.
 - `500 Internal Server Error` - Bad bad bad.
@@ -349,7 +350,8 @@ Attempt to register a user for an IceBerg user account.
 Upon successful registration, user is automatically logged-in to their newly created IceBerg user account.  
   
 Request Model: [IcebergUserRegParam](#IcebergUserRegParam)  
-Response Model: [UserLoginResult](#UserLoginResult)
+Response Model 201: [UserLoginResult](#UserLoginResult)
+Response Model 409: [ExceptionResult](#ExceptionResult)
 
 + Request (application/json)
 
@@ -373,6 +375,14 @@ Response Model: [UserLoginResult](#UserLoginResult)
 
         {
             "user_uuid": "fedcba0987654321"
+        }
+
++ Response 409 (application/json)
+
+        {
+            "message": "duplicate email",
+            "clazz": "com.icehousecorp.selfie.bla.bla.Blah",
+            "cause": null
         }
 
 ## Login [/v1/user/iceberg/login]
@@ -400,6 +410,20 @@ Response Model: [UserLoginResult](#UserLoginResult)
         {
             "user_uuid": "fedcba0987654321"
         }
+
+## Reset IceBerg User Password [/v1/user/iceberg/logout]
+### Reset IceBerg User Password [POST]
+A password reset link (URL) will be sent to User's registered email.
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
++ Response 204
 
 ## Login [/v1/user/logout]
 ### Logout from Selfie [POST]
