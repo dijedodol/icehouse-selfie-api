@@ -145,6 +145,7 @@ Ex: data validation fail, system failure, etc.
     struct StaticFileResult {
         String url;
         String sha1Hash;
+        Optional<Long> url_expired_time;
     }
 
 fields notes:
@@ -265,14 +266,16 @@ Response Model: [AppConfigurationResult](#AppConfigurationResult)
                 "lang_name": "English (US)",
                 "static_file": {
                     "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
-                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e"
+                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e",
+                    "url_expired_time": null
                 }
             },{
                 "id": "id_ID",
                 "lang_name": "Indonesia",
                 "static_file": {
                     "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
-                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e"
+                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e",
+                    "url_expired_time": null
                 }
             }]
         }
