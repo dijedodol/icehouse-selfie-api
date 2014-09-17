@@ -127,6 +127,12 @@ fields notes:
 
 - `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
 
+### IceBergUserResetPasswordParam<a id="IceBergUserResetPasswordParam"></a>
+
+    struct IceBergUserResetPasswordParam {
+        String email;
+    }
+
 ## Response Data Model
 Below is C++ structs definition describing the complex JSON data model used in the API request.  
 
@@ -416,7 +422,8 @@ Response Model: [UserLoginResult](#UserLoginResult)
 
 ## Reset IceBerg User Password [/v1/user/iceberg/password/reset]
 ### Reset IceBerg User Password [POST]
-A password reset link (URL) will be sent to User's registered email.
+A password reset link (URL) will be sent to User's registered email.  
+Request Model: [IceBergUserResetPasswordParam](#IceBergUserResetPasswordParam)
 
 + Request
 
@@ -425,6 +432,12 @@ A password reset link (URL) will be sent to User's registered email.
             Authorization: Token token=ExampleApiKey
             Access-Token: ExampleAccessToken
             TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            {
+                "email": "someone@yahoo.com"
+            }
             
 + Response 204
 
