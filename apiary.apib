@@ -175,7 +175,7 @@ fields notes:
 
     struct AppVersionResult {
         String version_name;
-        String version_code;
+        Integer version_code;
         boolean enforced;
     }
 
@@ -270,7 +270,7 @@ Response Model: [AppConfigurationResult](#AppConfigurationResult)
         {
             "latest_app_version": {
                 "version_name": "2.0.0",
-                "version_code": "3",
+                "version_code": 3,
                 "enforced": true
             },
             "available_language_packs": [{
