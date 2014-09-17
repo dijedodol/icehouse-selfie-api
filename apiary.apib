@@ -227,19 +227,25 @@ Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
 
 + Request (application/json)
 
-        {
-            "device_model": {
-                "manufacturer" : "Samsung",
-                "model" : "Galaxy S5"
-            },
-            "device_os": {
-                "type" : "Android OS",
-                "version" : "4.4.2",
-                "version_code" : 18
-            },
-            "device_uuid": "ExampleDeviceUUID",
-            "device_push_token": "ExamplePushToken"
-        }
+    + Header
+    
+            Authorization: Token token=ExampleApiKey
+    
+    + Body
+    
+            {
+                "device_model": {
+                    "manufacturer" : "Samsung",
+                    "model" : "Galaxy S5"
+                },
+                "device_os": {
+                    "type" : "Android OS",
+                    "version" : "4.4.2",
+                    "version_code" : 18
+                },
+                "device_uuid": "ExampleDeviceUUID",
+                "device_push_token": "ExamplePushToken"
+            }
 
 + Response 201 (application/json)
 
