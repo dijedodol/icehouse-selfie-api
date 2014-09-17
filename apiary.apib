@@ -150,14 +150,14 @@ Ex: data validation fail, system failure, etc.
 
     struct StaticFileResult {
         String url;
-        String sha1Hash;
+        String sha1_hash;
         Optional<Long> url_expired_time;
     }
 
 fields notes:
 
 - `url` - absolute url string to download the file  
-- `sha1Hash` - lower case hex encoded sha1 hash of the file, use this to check file integrity or checking cached file state
+- `sha1_hash` - lower case hex encoded sha1 hash of the file, use this to check file integrity or checking cached file state
 
 ### LanguagePack<a id="LanguagePack"></a>
 
@@ -278,7 +278,7 @@ Response Model: [AppConfigurationResult](#AppConfigurationResult)
                 "lang_name": "English (US)",
                 "static_file": {
                     "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
-                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e",
+                    "sha1_hash": "23eec2e95c9a4198010ba80546b58a869224432e",
                     "url_expired_time": null
                 }
             },{
@@ -286,7 +286,7 @@ Response Model: [AppConfigurationResult](#AppConfigurationResult)
                 "lang_name": "Indonesia",
                 "static_file": {
                     "url": "http://birdgei.files.wordpress.com/2012/02/100.gif",
-                    "sha1Hash": "23eec2e95c9a4198010ba80546b58a869224432e",
+                    "sha1_hash": "23eec2e95c9a4198010ba80546b58a869224432e",
                     "url_expired_time": null
                 }
             }]
