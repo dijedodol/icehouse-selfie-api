@@ -121,6 +121,7 @@ Below is C++ structs definition describing the complex JSON data model used in t
         String first_name;
         String last_name;
         String date_of_birth;
+        GenderEnum gender;
     }
 
 fields notes:
@@ -383,7 +384,8 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
                 "password": "rahasia...",
                 "first_name": "Selfie",
                 "last_name": "User",
-                "date_of_birth": "19980321"
+                "date_of_birth": "19980321",
+                "gender": "female"
             }
 
 + Response 201 (application/json)
@@ -447,7 +449,7 @@ Request Model: [IceBergUserResetPasswordParam](#IceBergUserResetPasswordParam)
             
 + Response 204
 
-## Login [/v1/user/logout]
+## Logout [/v1/user/logout]
 ### Logout from Selfie [POST]
 Response Model: [UserLogoutResult](#UserLogoutResult)
 
@@ -463,4 +465,25 @@ Response Model: [UserLogoutResult](#UserLogoutResult)
 
         {
             "user_uuid": "fedcba0987654321"
+        }
+
+## UserProfile [/v1/user/people/me]
+### Get Current User Profile [GET]
+Response Model: [UserProfileResult](#UserProfileResult)
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
++ Response 200 (application/json)
+
+        {
+            "email": "user@something.com",
+            "name": "Selfie User",
+            "date_of_birth": "19980321",
+            "gender": "female"
         }
