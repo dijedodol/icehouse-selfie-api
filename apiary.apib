@@ -262,6 +262,8 @@ Response Model: [AppInstanceRegResult](#AppInstanceRegResult)
             "user_uuid": "1234567890abcdef"
         }
 
++ Response 401
+
 # Group App Configuration
 Some application's configuration can be pulled from the server.
 
@@ -300,6 +302,7 @@ Response Model: [AppConfigurationResult](#AppConfigurationResult)
             }]
         }
 
++ Response 401
 
 # Group Social Network
 User can register or login to Selfie using their social networking account.
@@ -333,6 +336,8 @@ Response Model: [UserLoginResult](#UserLoginResult)
             "user_uuid": "fedcba0987654321"
         }
 
++ Response 401
+
 ## Association [/v1/user/social_network/assoc]
 ### Associate a Social Network [POST]
 Associate a social network account to an existing social network account.
@@ -363,6 +368,8 @@ Response Model: [UserLoginResult](#UserLoginResult)
         {
             "user_uuid": "fedcba0987654321"
         }
+
++ Response 401
 
 # Group IceBerg User
 In addition to social network account login, Selfie user also can register and login using their email address & password (IceBerg account).
@@ -409,6 +416,8 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
             "cause": null
         }
 
++ Response 401
+
 ## Login [/v1/user/iceberg/login]
 ### Login a User to IceBerg [POST]
 Request Model: [IcebergUserLoginParam](#IcebergUserLoginParam)  
@@ -435,6 +444,8 @@ Response Model: [UserLoginResult](#UserLoginResult)
             "user_uuid": "fedcba0987654321"
         }
 
++ Response 401
+
 ## Change IceBerg User Password [/v1/user/iceberg/password]
 ### Change IceBerg User Password [PUT]
 Request Model: [IceBergChangePasswordParam](#IceBergChangePasswordParam)
@@ -456,6 +467,8 @@ Request Model: [IceBergChangePasswordParam](#IceBergChangePasswordParam)
     
 + Response 204 (application/json)
 
++ Response 401
+
 ## Reset IceBerg User Password [/v1/user/iceberg/password/reset]
 ### Reset IceBerg User Password [POST]
 A password reset link (URL) will be sent to User's registered email.  
@@ -476,6 +489,8 @@ Request Model: [IceBergUserResetPasswordParam](#IceBergUserResetPasswordParam)
             }
             
 + Response 204
+
++ Response 401
 
 ## Logout [/v1/user/logout]
 ### Logout from Selfie [POST]
@@ -515,3 +530,5 @@ Response Model: [UserProfileResult](#UserProfileResult)
             "date_of_birth": "19980321",
             "gender": "female"
         }
+
++ Response 401
