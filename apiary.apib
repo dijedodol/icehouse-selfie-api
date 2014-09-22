@@ -217,6 +217,9 @@ fields notes:
         String name;
         GenderEnum gender;
         String date_of_birth;
+        Optional<SocialProviderEnum> social_network_type;
+        Optional<String> social_network_id;
+        boolean is_anonymous;
     }
 
 fields notes:
@@ -527,8 +530,11 @@ Response Model: [UserProfileResult](#UserProfileResult)
         {
             "email": "user@something.com",
             "name": "Selfie User",
+            "gender": "female",
             "date_of_birth": "19980321",
-            "gender": "female"
+            "social_network_type": "facebook",
+            "social_network_id": "123",
+            "is_anonymous": false
         }
 
 + Response 401
