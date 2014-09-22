@@ -128,6 +128,13 @@ fields notes:
 
 - `date_of_birth` - date of birth formatted as yyyyMMdd, ex: 20141231 for December 31th, 2014
 
+### IceBergChangePasswordParam<a id="IceBergChangePasswordParam"></a>
+
+    struct IceBergChangePasswordParam {
+        String old_password;
+        String new_password;
+    }
+
 ### IceBergUserResetPasswordParam<a id="IceBergUserResetPasswordParam"></a>
 
     struct IceBergUserResetPasswordParam {
@@ -427,6 +434,27 @@ Response Model: [UserLoginResult](#UserLoginResult)
         {
             "user_uuid": "fedcba0987654321"
         }
+
+## Change IceBerg User Password [/v1/user/iceberg/password]
+### Change IceBerg User Password [PUT]
+Request Model: [IceBergChangePasswordParam](#IceBergChangePasswordParam)
+
++ Request
+
+    + Header
+
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+    
+    + Body
+    
+            {
+                "old_password": "1234",
+                "new_password": "5678"
+            }
+    
++ Response 204 (application/json)
 
 ## Reset IceBerg User Password [/v1/user/iceberg/password/reset]
 ### Reset IceBerg User Password [POST]
