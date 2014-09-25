@@ -472,6 +472,12 @@ Request Model: [IceBergChangePasswordParam](#IceBergChangePasswordParam)
 
 + Response 401
 
++ Response 422
+            
+            {
+                "message" : "Password not correct"
+            }
+
 ## Reset IceBerg User Password [/v1/user/iceberg/password/reset]
 ### Reset IceBerg User Password [POST]
 A password reset link (URL) will be sent to User's registered email.  
