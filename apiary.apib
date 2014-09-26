@@ -314,7 +314,9 @@ Current list of supported social network is listed in [SocialProviderEnum](#Soci
 ## Registration / Login [/v1/user/social_network/login]
 ### Register / Login through Social Network [POST]
 Request Model: [UserSocialLoginParam](#UserSocialLoginParam)  
-Response Model: [UserLoginResult](#UserLoginResult)
+Response Model: [UserLoginResult](#UserLoginResult)  
+`401` is returned when the given `social_access_token` was not valid.  
+`409` is returned if the social account is already associated to a different IceBerg account.
 
 + Request (application/json)
 
@@ -341,38 +343,7 @@ Response Model: [UserLoginResult](#UserLoginResult)
 
 + Response 401
 
-## Association [/v1/user/social_network/assoc]
-### Associate a Social Network [POST]
-Associate a social network account to an existing social network account.
-User must be logged-in to the Selfie system before allowed to access this functionality.  
-  
-Request Model: [UserSocialLoginParam](#UserSocialLoginParam)  
-Response Model: [UserLoginResult](#UserLoginResult)
-
-+ Request (application/json)
-
-    + Header
-
-            Authorization: Token token=ExampleApiKey
-            Access-Token: ExampleAccessToken
-            TimeZone: Asia/Jakarta
-            
-    + Body
-    
-            {
-                "social_provider": "facebook",
-                "social_access_token": "example_facebook_access_token",
-                "social_id": "example_facebook_user_id",
-                "device_push_token": "example_gcm_push_token"
-            }
-            
-+ Response 201 (application/json)
-
-        {
-            "user_uuid": "fedcba0987654321"
-        }
-
-+ Response 401
++ Response 409
 
 # Group IceBerg User
 In addition to social network account login, Selfie user also can register and login using their email address & password (IceBerg account).
