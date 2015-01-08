@@ -374,7 +374,8 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
                 "first_name": "Selfie",
                 "last_name": "User",
                 "date_of_birth": "19980321",
-                "gender": "female"
+                "gender": "female",
+                "phone_number" : "+6281290xxx"
             }
 
 + Response 201 (application/json)
@@ -507,9 +508,31 @@ Response Model: [UserProfileResult](#UserProfileResult)
             "last_name" : "User",
             "gender": "female",
             "date_of_birth": "19980321",
+            "phone_number" : "+6281290xxxx",
             "social_network_type": "facebook",
             "social_network_id": "123",
             "is_anonymous": false
         }
 
 + Response 401
+
+### Update Current User Info [PUT]
+
++ Request
+
+    + Header
+        
+            Authorization: Token token=ExampleApiKey
+            Access-Token: ExampleAccessToken
+            TimeZone: Asia/Jakarta
+            
+    + Body
+    
+            
+            
++ Response 204 (no content)
+
++ Response 401 
+
++ Response 502
+            
