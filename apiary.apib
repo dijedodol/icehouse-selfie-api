@@ -369,8 +369,9 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
     + Body
     
             {
-                "email": "user@something.com",
-                "password": "rahasia...",
+                "auth_type" : "email/facebook/twitter/telephone",
+                "auth_name" : "user@something.com",
+                "auth_credentials": "password/ social token",
                 "first_name": "Selfie",
                 "last_name": "User",
                 "date_of_birth": "19980321",
@@ -381,7 +382,13 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
 + Response 201 (application/json)
 
         {
-            "user_uuid": "fedcba0987654321"
+            "first_name": "Selfie",
+            "last_name": "User",
+            "date_of_birth": "19980321",
+            "gender": "female",
+            "phone_number": "09018201",
+            "href": "https://devapi.icebergapp.io/v2/users/h2gkc4mmbjh2dmq7cdv2sy7wne",
+            "user_uuid": "h2gkc4mmbjh2dmq7cdv2sy7wne"
         }
 
 + Response 409 (application/json)
