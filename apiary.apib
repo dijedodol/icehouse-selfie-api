@@ -349,6 +349,106 @@ Response Model: [UserLoginResult](#UserLoginResult)
 # Group IceBerg User
 In addition to social network account login, Selfie user also can register and login using their email address & password (IceBerg account).
 
+## Oauth [v1/user/iceberg/oauth]
+### Login through IceBerg [POST]
+
++ Request (application/json)
+
+    + Header
+            
+            Content-Type: multipart/form-data
+            Accept:  multipart/form-data
+    
+    + Body
+    
+        {
+            "grant_type" : "password,
+            "client_id" : 12,
+            "client_secret" : "clientSEcret343242",
+            "scope" : "email/facebook/twitter/telephone",
+            "username" : "username",
+            "password" : "password
+        }
+        
++ Response 201 (application/json)
+    
+        {
+            "is_new_user" : true,
+            "user" : {
+                "access_token" : "32193810434",
+                "token_type" : "Bearer",
+                "refresh_token" : "rw938309823",
+                "scope" : "email/facebook/twitter/telephone",
+                "user_uuid" : "abcdeeggs"
+            }
+        }
+
++ Response 401 (application/json)
+
++ Response 400 (application/json)
+    
+
+### Token Request For Anonymous User [POST]
+
++ Request (application/json)
+
+    + Header 
+    
+            Content-Type : multipart/form-data
+            Accept : multipart/form-data
+            
+    
+    + Body
+    
+            {
+                "grant_type" : "client_credentials",
+                "client_secret" : "eoiruwor390842094839",
+                "client_id" : 12,
+                "scope" : "email/facebook/twitter/telephone"
+            }
+        
++ Response 201 (application/json)
+
+    {
+        "access_token" : "23920392039203",
+        "token_type" : "Bearer",
+        "scope" : "email/facebook/twitter/telephone"
+    }
+    
++ Response 400 (application/json)
+
+
+
+### Refresh Token [POST]
+
++ Request (application/json)
+
+    + Header
+            
+            Content-Type : multipart/form-data
+            Accept : multipart/form-data
+            
+    
+    + Body
+    
+            {
+                "grant_type" : "refresh_token",
+                "client_id" : 12,
+                "client_secret" : "429483isoeuroeisur",
+                "scope" : "email/facebook/twitter/telephone",
+                "refresh_token" : "3384938rkjsehrksejrh"
+            }
+            
++ Response 201 (application/json)
+
+            {
+                "access_token" : "3i434982930482",
+                "token_type" :  "Bearer",
+                "refresh_token" : "349204234urieuor",
+                "scope" : "email/facebook/twitter/telephone"
+            }
+        
+
 ## Registration [/v1/user/iceberg/register]
 ### Register a user to IceBerg [POST]
 Attempt to register a user for an IceBerg user account.
@@ -361,6 +461,7 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
 + Request (application/json)
 
     + Header
+    
             Authorization: Bearer {{access_token}}
             
     + Body
@@ -373,7 +474,8 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
                 "last_name": "User",
                 "date_of_birth": "19980321",
                 "gender": "female",
-                "phone_number" : "+6281290xxx"
+                "phone_number" : "+6281290xxx",
+                "app_id" : 12
             }
 
 + Response 201 (application/json)
@@ -397,6 +499,7 @@ Response Model 409: [ExceptionResult](#ExceptionResult)
         }
 
 + Response 401
+
 
 ## Login [/v1/user/iceberg/login]
 ### Login a User to IceBerg [POST]
