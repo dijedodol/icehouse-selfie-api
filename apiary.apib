@@ -595,7 +595,7 @@ Response Model: [UserLogoutResult](#UserLogoutResult)
             "user_uuid": "fedcba0987654321"
         }
 
-## UserProfile [/v1/user/people/me]
+## UserProfile [/v1/user/people/me/{user_uuid}]
 ### Get Current User Profile [GET]
 Response Model: [UserProfileResult](#UserProfileResult)
 
@@ -636,11 +636,14 @@ Response Model: [UserProfileResult](#UserProfileResult)
     + Body
     
             {
+                "id" : "userUuid",
                 "first_name": "test",
                 "last_name": "account",
                 "date_of_birth": "19980321",
                 "phone_number": null,
-                "gender": "male"
+                "gender": "male",
+                "email_address" : "email@myemail.com",
+                "facebook_id" : "facebookId"
             }
             
             
